@@ -180,7 +180,7 @@ ootBingoGenerator = function(levelList, objectList, guardList, weaponList, cheat
 		goalValue = 0;
 		goalName = "";
 		// Assign Random Variable to random number
-		randomNumber = Math.floor(25*Math.random());
+		randomNumber = Math.floor(28*Math.random());
 		//alert(randomNumber);
 		switch(randomNumber){
 		case 0:
@@ -194,6 +194,7 @@ ootBingoGenerator = function(levelList, objectList, guardList, weaponList, cheat
 			+ levelList[randomLevel + 2].value;
 		    goalSynergy = ["A", "SA", "00A", level.name];
 		    break;
+		case 27:
 		case 2:
 		    //N levels 3-10
 		    nLevels = Math.ceil(7*Math.random() + 3);
@@ -202,6 +203,7 @@ ootBingoGenerator = function(levelList, objectList, guardList, weaponList, cheat
 		    goalValue = nLevels*cheat.const*avLevelTime;
 		    goalSynergy = cheat.synergy.concat([cheat.name]);
 	   	    break;
+	   	case 26:
 		case 3:
 		    // N levels 1-5
 		    nLevels = Math.ceil(5*Math.random());
@@ -211,6 +213,7 @@ ootBingoGenerator = function(levelList, objectList, guardList, weaponList, cheat
 		    goalValue = nLevels*cheat.const*av00ATime;
 		    goalSynergy = cheat.synergy.concat([cheat.name, "00A"]);
 		    break;
+		case 25:
 		case 4:
 		    // N levels 1-5
 		    nLevels = Math.ceil(5*Math.random());
@@ -293,6 +296,7 @@ ootBingoGenerator = function(levelList, objectList, guardList, weaponList, cheat
 			}
 		    }
 		    break;
+		
 		case 10:
 		    //nLevels takes a value from 2-10
 		    nLevels = Math.ceil(9*Math.random()+1);
