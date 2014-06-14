@@ -180,7 +180,7 @@ ootBingoGenerator = function(levelList, objectList, guardList, weaponList, cheat
 		goalValue = 0;
 		goalName = "";
 		// Assign Random Variable to random number
-		randomNumber = Math.floor(28*Math.random());
+		randomNumber = Math.floor(27*Math.random());
 		//alert(randomNumber);
 		switch(randomNumber){
 		case 0:
@@ -194,7 +194,7 @@ ootBingoGenerator = function(levelList, objectList, guardList, weaponList, cheat
 			+ levelList[randomLevel + 2].value;
 		    goalSynergy = ["A", "SA", "00A", level.name];
 		    break;
-		case 27:
+		case 24:
 		case 2:
 		    //N levels 3-10
 		    nLevels = Math.ceil(7*Math.random() + 3);
@@ -203,7 +203,7 @@ ootBingoGenerator = function(levelList, objectList, guardList, weaponList, cheat
 		    goalValue = nLevels*cheat.const*avLevelTime;
 		    goalSynergy = cheat.synergy.concat([cheat.name]);
 	   	    break;
-	   	case 26:
+	   	case 25:
 		case 3:
 		    // N levels 1-5
 		    nLevels = Math.ceil(5*Math.random());
@@ -213,7 +213,7 @@ ootBingoGenerator = function(levelList, objectList, guardList, weaponList, cheat
 		    goalValue = nLevels*cheat.const*av00ATime;
 		    goalSynergy = cheat.synergy.concat([cheat.name, "00A"]);
 		    break;
-		case 25:
+		case 26:
 		case 4:
 		    // N levels 1-5
 		    nLevels = Math.ceil(5*Math.random());
@@ -400,23 +400,18 @@ ootBingoGenerator = function(levelList, objectList, guardList, weaponList, cheat
 		    break;
 		case 21:
 		    nLevels = Math.ceil(Math.random()*5);
-		    goalName = "Beat " + nLevels + " levels with over 100% Accuracy";
+		    accuracy = Math.ceil(Math.random()*2)*50+50;
+		    goalName = "Beat " + nLevels + " levels with over" + accuracy + "% Accuracy";
 		    goalSynergy = ["2x GL", "2x RL", "Accuracy"];
-		    goalValue = nLevels*avLevelTime*1.4; // Setting Accuracy Constant to 1.4 difficulty
+		    goalValue = nLevels*avLevelTime*1.2*accuracy/100.0; // Setting Accuracy Constant to 1.2 difficulty
 		    break;
 		case 22:
-		    nLevels = Math.ceil(Math.random()*4);
-		    goalName = "Beat " + nLevels + " levels with over 150% Accuracy";
-		    goalSynergy = ["2x GL", "2x RL", "Magnum", "RC-P90","Accuracy"];
-		    goalValue = nLevels*avLevelTime*1.7; // 150% accuracy is 1.7 in diffuclty
-		    break;
-		case 23:
 		    nObjects = Math.ceil(Math.random()*3)*25+25;
 		    goalName = "Kill " + nObjects + " guards while in a tank";
 		    goalSynergy = ["Streets","Runway", "kill"];
 		    goalValue = nObjects*12; //Tank kills are slow and should be 12s each
 		    break;
-		case 24:
+		case 23:
 		    nLevels = Math.ceil(Math.random()*5);
 		    goalName = "Beat " + nLevels + " level(s) on DLTK, with Damage at 0%";
 		    goalSynergy = ["007", "LTK", "DLTK"];
