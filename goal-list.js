@@ -93,12 +93,12 @@ cheatList[4] = { name: "DK Mode", synergy: ["cheat"], const: 0.8 };
 
 var objectList = [];
 
-objectList[0] = { name: "Crates", synergy: ["Deopt", "Destory"], maxAmmount: 100, value: 5 };
-objectList[1] = { name: "Glass Panes", synergy: ["Glass", "Destory"], maxAmmount: 40, value: 7 };
-objectList[2] = { name: "Drone Guns", synergy: ["Jungle", "Destory"], maxAmmount: 50, value: 18 };
-objectList[3] = { name: "Security Cameras", synergy: ["Bunker 1","Bunker 2", "Surface 2", "Destory"], maxAmmount: 30, value: 11 };
-objectList[4] = { name: "Computer Moniters", synergy: ["Aztec", "Destory"], maxAmmount: 50, value: 8 };
-objectList[5] = { name: "Tables", synergy: ["Tables", "Destory"], maxAmmount: 40, value: 7 };
+objectList[0] = { name: "Crates", synergy: ["Deopt", "Destroy"], maxAmmount: 100, value: 5 };
+objectList[1] = { name: "Glass Panes", synergy: ["Glass", "Destroy"], maxAmmount: 40, value: 7 };
+objectList[2] = { name: "Drone Guns", synergy: ["Jungle", "Destroy"], maxAmmount: 50, value: 18 };
+objectList[3] = { name: "Security Cameras", synergy: ["Bunker 1","Bunker 2", "Surface 2", "Destroy"], maxAmmount: 30, value: 11 };
+objectList[4] = { name: "Computer Moniters", synergy: ["Aztec", "Destroy"], maxAmmount: 50, value: 8 };
+objectList[5] = { name: "Tables", synergy: ["Tables", "Destroy"], maxAmmount: 40, value: 7 };
 
 var guardList = [];
 
