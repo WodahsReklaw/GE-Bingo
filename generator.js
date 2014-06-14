@@ -1,135 +1,494 @@
 //NOTICE: As of version 6, this script will only generate cards correctly for Ocarina of Time bingo
 //and as shuch should be saved alongside the regular bingo script.
-srl.ootbingo = function (levelList, objectList, guardList, weaponList, cheatList, size) {
+ootBingoGenerator = function(levelList, objectList, guardList, weaponList, cheatList, opts) {
+    if(!opts) opts = {};
+    var LANG = opts.lang || 'name';
+    var SEED = opts.seed || Math.ceil(999999 * Math.random()).toString();
+	if(!getUrlParameter("seed")){
+		window.location = '?seed=' + SEED;
+	}
+    Math.seedrandom(SEED);
+    var MODE = opts.mode || 'normal';
+    
+    //giuocob 16-8-12: lineCheckList[] has been replaced to allow for removal of all-child rows
+    //Note: the rowElements relation is simply the inverse of the rowCheckList relation
+    var rowElements = {};
+    rowElements["row1"] = [1,2,3,4,5];
+    rowElements["row2"] = [6,7,8,9,10];
+    rowElements["row3"] = [11,12,13,14,15];
+    rowElements["row4"] = [16,17,18,19,20];
+    rowElements["row5"] = [21,22,23,24,25];
+    rowElements["col1"] = [1,6,11,16,21];
+    rowElements["col2"] = [2,7,12,17,22];
+    rowElements["col3"] = [3,8,13,18,23];
+    rowElements["col4"] = [4,9,14,19,24];
+    rowElements["col5"] = [5,10,15,20,25];
+    rowElements["tlbr"] = [1,7,13,19,25];
+    rowElements["bltr"] = [5,9,13,17,21];
 
-    function gup( name ) {
-	name = name.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
-	var regexS = "[\\?&]"+name+"=([^&#]*)";
-	var regex = new RegExp( regexS );
-	var results = regex.exec( window.location.href );
-	if( results == null )
-	    return "";
-	else
-	    return results[1];
+    //Given an object that maps keys to flat arrays, invert said object
+    function invertObject(obj) {
+	var ret = {};
+	Object.keys(obj).forEach(function(key) {
+	    obj[key].forEach(function(item) {
+		if(!ret[item]) ret[item] = [];
+		ret[item].push(key);
+	    });
+	});
+	return ret;
     }
 
-    var LANG = gup( 'lang' );
-    if (LANG == '') LANG = 'name';
-    var SEED = gup( 'seed' );
-    if (SEED == "") {
-	window.location = '?seed=' + Math.ceil(999999 * Math.random());
-    } else {
-	var MODE = gup( 'mode' );
-	var cardtype = "string";
-	
-	if (MODE == "short") { cardtype = "Short"; } 
-	else if (MODE == "long") { cardtype = "Long"; }
-	else { cardtype = "Normal";	}
-	
-	if (typeof size == 'undefined') size = 5;
-	
-	Math.seedrandom(SEED); //sets up the RNG
-	var MAX_SEED = 999999; //1 million cards
-	var results = $("#results");
-	results.append ("<p>OoT Bingo <strong>v8.1</strong>&emsp;Seed: <strong>" + 
-			SEED + "</strong>&emsp;Card type: <strong>" + cardtype + "</strong></p>");
-	
-	//giuocob 16-8-12: lineCheckList[] has been replaced to allow for removal of all-child rows
-	//Note: the rowElements relation is simply the inverse of the rowCheckList relation
+    rowCheckList = invertObject(rowElements);
 
-	var rowCheckList = [];
-	var rowElements = new Object();
-	if(size == 5)
+
+
+
+    //Main entry point
+    function makeCard() {
+	var bingoBoard = []; //the board itself stored as an array first
+	for (var i=1;i<=25;i++) {
+	    if(MODE == "short")
+	    {
+		bingoBoard[i] = {difficulty: difficulty(i), child: "yes"};
+	    }
+	    else
+	    {
+		bingoBoard[i] = {difficulty: difficulty(i), child: "no"};
+	    }
+	}                                          // in order 1-25
+	
+	
+	//giuocob 19-2-13: bingoBoard is no longer populated left to right:
+	//It is now populated mostly randomly, with high difficult goals and
+	//goals on the diagonals out in front
+	var populationOrder = [];
+	populationOrder[1] = 13;   //Populate center first
+	var diagonals = [1,7,19,25,5,9,17,21];
+	shuffle(diagonals);
+	populationOrder = populationOrder.concat(diagonals);   //Next populate diagonals
+	var nondiagonals = [2,3,4,6,8,10,11,12,14,15,16,18,20,22,23,24];
+	shuffle(nondiagonals);
+	populationOrder = populationOrder.concat(nondiagonals);   //Finally add the rest of the squares
+	//Lastly, find location of difficulty 23,24,25 elements and put them out front
+	for(var k=23;k<=25;k++)
 	{
-	    rowElements["row1"] = [1,2,3,4,5];
-	    rowElements["row2"] = [6,7,8,9,10];
-	    rowElements["row3"] = [11,12,13,14,15];
-	    rowElements["row4"] = [16,17,18,19,20];
-	    rowElements["row5"] = [21,22,23,24,25];
-	    rowElements["col1"] = [1,6,11,16,21];
-	    rowElements["col2"] = [2,7,12,17,22];
-	    rowElements["col3"] = [3,8,13,18,23];
-	    rowElements["col4"] = [4,9,14,19,24];
-	    rowElements["col5"] = [5,10,15,20,25];
-	    rowElements["tlbr"] = [1,7,13,19,25];
-	    rowElements["bltr"] = [5,9,13,17,21];
-	    
-	    rowCheckList[1] = ["row1","col1","tlbr"];
-	    rowCheckList[2] = ["row1","col2"];
-	    rowCheckList[3] = ["row1","col3"];
-	    rowCheckList[4] = ["row1","col4"];
-	    rowCheckList[5] = ["row1","col5","bltr"];
-	    
-	    rowCheckList[6] = ["row2","col1"];
-	    rowCheckList[7] = ["row2","col2","tlbr"];
-	    rowCheckList[8] = ["row2","col3"];
-	    rowCheckList[9] = ["row2","col4","bltr"];
-	    rowCheckList[10] = ["row2","col5"];
-	    
-	    rowCheckList[11] = ["row3","col1"];
-	    rowCheckList[12] = ["row3","col2"];
-	    rowCheckList[13] = ["row3","col3","tlbr","bltr"];
-	    rowCheckList[14] = ["row3","col4"];
-	    rowCheckList[15] = ["row3","col5"];
-	    
-	    rowCheckList[16] = ["row4","col1"];
-	    rowCheckList[17] = ["row4","col2","bltr"];
-	    rowCheckList[18] = ["row4","col3"];
-	    rowCheckList[19] = ["row4","col4","tlbr"];
-	    rowCheckList[20] = ["row4","col5"];
-	    
-	    rowCheckList[21] = ["row5","col1","bltr"];
-	    rowCheckList[22] = ["row5","col2"];
-	    rowCheckList[23] = ["row5","col3"];
-	    rowCheckList[24] = ["row5","col4"];
-	    rowCheckList[25] = ["row5","col5","tlbr"];
+	    var currentSquare = getDifficultyIndex(k);
+	    if(currentSquare == 0) continue;
+	    for(var i=1;i<25;i++)
+	    {
+		if(populationOrder[i] == currentSquare)
+		{
+		    populationOrder.splice(i,1);
+		    break;
+		}
+	    }
+	    populationOrder.splice(1,0,currentSquare);
+	}
+
+	// Wodahs-Reklaw
+	// Due to the ammount of complexity of GE
+	// it would seem better to generate a random
+	// pool of goals with varying difficulty and
+	// level selection.
+	function getRandomLevel()
+	{
+	    return levelList[Math.floor(levelList.length * Math.random())];
+	}
+	function getRandomWeapon()
+	{
+	    return weaponList[Math.floor(weaponList.length * Math.random())];
+	}
+	function getRandomCheat()
+	{
+	    return cheatList[Math.floor(cheatList.length * Math.random())];
+	}
+	function getRandomGuard()
+	{
+	    return guardList[Math.floor(guardList.length * Math.random())];
+	}
+	function getRandomObject()
+	{
+	    return objectList[Math.floor(objectList.length * Math.random())];
+	}
+	function swap(items, firstIndex, secondIndex){
+	    var temp = items[firstIndex];
+	    items[firstIndex] = items[secondIndex];
+	    items[secondIndex] = temp;
+	}
+	function partition(items, left, right) {
+	    var pivot   = items[Math.floor((right + left) / 2)].value,
+            i = left,
+            j = right;
+	    while (i <= j) {
+		while (items[i].value < pivot.value) {
+		    i++;
+		}
+		while (items[j].value > pivot.value) {
+		    j--;
+		}
+		if (i <= j) {
+		    swap(items, i, j);
+		    i++;
+		    j--;
+		}
+	    }
+	    return i;
+	}
+	function quickSort(items, left, right) {
+	    var index;
+	    if (items.length > 1) {
+		left = typeof left != "number" ? 0 : left;
+		right = typeof right != "number" ? items.length - 1 : right;
+		index = partition(items, left, right);
+		if (left < index - 1) {
+		    quickSort(items, left, index - 1);
+		}
+		if (index < right) {
+		    quickSort(items, index, right);
+		}
+	    }
+	   // alert("Items being returned: " +items.length);
+	    return items;
+	}
+
+	function makeGoalList()
+	{
+	    var geGoalList = []
+	    var totalGoals = 250;
+	    var randomNumber = 0;
+	    var goalValue = 0;
+	    var goalName = "";
+	    var goalSynergy = [];
+	    var level;
+	    var cheat;
+	    var object;
+	    var weapon;
+	    var guard;
+	    var nLevels;
+	    var nObjects;
+	    var randomLevel = 0;
+	    var ltkConst = 4;
+	    var dltkConst = 10;
+	    var keycardConst = 10.0;
+	    var avLevelTime = 80; // 85 Is actual value but bias for
+	                          // Agent needs to be taken into account.
+	    var avSATime = 86;
+	    var av00ATime = 103;
+	    var avSafeTime = 71;
+	    //alert("Entered Loop Thing");
+	    for (var i = 0; i < totalGoals; i++){
+		goalValue = 0;
+		goalName = "";
+		// Assign Random Variable to random number
+		randomNumber = Math.floor(21*Math.random());
+		//alert(randomNumber);
+		switch(randomNumber){
+		case 21:
+		case 0:
+		    level = getRandomLevel();
+		    randomLevel = Math.floor(Math.floor(Math.random()*19) * 3);
+		    goalName = "Beat " + levelList[randomLevel].name + " on A/SA/00A";
+		    //alert("rndThing: " + randomLevel + " " + (randomLevel+1) + (randomLevel+2));
+		    goalValue = levelList[randomLevel].value 
+			+ levelList[randomLevel + 1].value
+			+ levelList[randomLevel + 2].value;
+		    goalSynergy = ["A", "SA", "00A", level.name];
+		    break;
+		case 1:
+		    //N levels 3-10
+		    nLevels = Math.ceil(7*Math.random() + 3);
+		    cheat = getRandomCheat();
+		    goalName = "Beat " + nLevels + " levels with " + cheat.name;
+		    goalValue = nLevels*cheat.const*avLevelTime;
+		    goalSynergy = cheat.synergy.concat([cheat.name]);
+	   	    break;
+		case 2:
+		    // N levels 1-5
+		    nLevels = Math.ceil(5*Math.random());
+		    cheat = getRandomCheat();
+		    goalName = "Beat " + nLevels + " level(s) with " + cheat.name
+			+ " on 00A";
+		    goalValue = nLevels*cheat.const*av00ATime;
+		    goalSynergy = cheat.synergy.concat([cheat.name, "00A"]);
+		    break;
+		case 3:
+		    // N levels 1-5
+		    nLevels = Math.ceil(5*Math.random());
+		    cheat = getRandomCheat();
+		    goalName = "Beat " + nLevels + " level(s) with " + cheat.name
+			+ " on SA";
+		    goalValue = nLevels*cheat.const*avSATime;
+		    goalSynergy = cheat.synergy.concat([cheat.name, "SA"]);
+		    break;
+		case 4:
+		    object = getRandomObject();
+		    // Make N objects 1/2, 3/4, 4/4
+		    nObjects = Math.ceil(object.maxAmmount/2 
+			+ object.maxAmmount*Math.floor(Math.random()*3)/4);
+		    goalName = "Destory " + nObjects + " " + object.name;
+		    goalValue = nObjects*object.value;
+		    goalSynergy = object.synergy;
+		    break;
+		case 5:
+		    level = getRandomLevel();
+		    goalName = "Beat all stages in " + level.row + " row on Agent";
+		    goalSynergy = ["row"+level.row, "row"];
+		    for (var j = 0; j < 59; j++)
+		    {
+			if (levelList[j].name == level.row)
+			{
+			    for (var k = 0; k < 5; k++)
+			    {
+				goalValue += levelList[j+3*k].value;
+			    }
+			    break;
+			}
+		    }
+		    break;
+		case 6:
+		    level = getRandomLevel();
+		    goalName = "Beat all stages in " + level.col + " column on Agent";
+		    goalSynergy = ["col"+level.col, "col"];
+		    for (var j = 0; j < 59; j++)
+		    {
+			if (levelList[j].name == level.col)
+			{
+			    for (var k = 0; k < 4; k++)
+			    {
+				goalValue += levelList[j+5*3*k].value;
+			    }
+			    break;
+			}
+		    }
+		    break;
+		case 19:
+		    level = getRandomLevel();
+		    goalName = "Beat all stages in " + level.col + " column on SA";
+		    goalSynergy = ["col"+level.col, "col"];
+		    for (var j = 0; j < 59; j++)
+		    {
+			if (levelList[j].name == level.col)
+			{
+			    for (var k = 0; k < 4; k++)
+			    {
+				goalValue += levelList[j+5*3*k+1].value;
+			    }
+			    break;
+			}
+		    }
+		    break;
+		case 20:
+		    level = getRandomLevel();
+		    goalName = "Beat all stages in " + level.col + " column on 00A";
+		    goalSynergy = ["col"+level.col, "col"];
+		    for (var j = 0; j < 59; j++)
+		    {
+			if (levelList[j].name == level.col)
+			{
+			    for (var k = 0; k < 4; k++)
+			    {
+				goalValue += levelList[j+5*3*k+2].value;
+			    }
+			    break;
+			}
+		    }
+		    break;
+		case 7:
+		    //nLevels takes a value from 2-10
+		    nLevels = Math.ceil(9*Math.random()+1);
+		    weapon = getRandomWeapon();
+		    goalSynergy = weapon.synergy.concat(["weapon"]);		    
+		    goalName = "Beat " + nLevels + " levels using only " + weapon.name;
+		    goalValue = nLevels*weapon.const*avLevelTime;
+		    break;
+		case 8:
+		    //nLevels takes a value from 1-10
+		    nLevels = Math.ceil(10*Math.random());
+		    weapon = getRandomWeapon();
+		    goalSynergy = weapon.synergy.concat(["weapon", "00A"]);
+		    goalName = "Beat " + nLevels + " level(s) using only " + weapon.name
+			+ " on 00A";
+		    goalValue = nLevels*weapon.const*av00ATime;
+		    break;
+		case 9:
+		    //nLevels takes a value from 1-10
+		    nLevels = Math.ceil(10*Math.random());
+		    weapon = getRandomWeapon();
+		    goalSynergy = weapon.synergy.concat(["weapon", "SA"]);
+		    goalName = "Beat " + nLevels + " level(s) using only " + weapon.name
+			+ " on 00A";
+		    goalValue = nLevels*weapon.const*avSATime;
+		    break;
+
+		case 10:
+		    //nObjects takes a value from ?-?
+		    nObjects = Math.ceil(5*Math.random() + 10);
+		    goalName = "Obtain " + nObjects + " key(cards)";
+		    goalValue = keycardConst*nObjects;
+		    goalSynergy = ["key", "Silo"];
+		    break;
+		case 11:
+		    //nLevels takes 5-10?
+		    nLevels = Math.ceil(5*Math.random() + 5);
+		    goalName = "Activate an alarm on " + nLevels + " levels.";
+		    goalValue = nLevels*avLevelTime;
+		    goalSynergy = ["Dam", "Control", "Alarms"];
+		    break;
+		case 12:
+		    level = getRandomLevel();
+		    goalName = "Beat all stages in " + level.row + " row on 00A";
+		    goalSynergy = ["row"+level.row, "row", "00A"];
+		    for (var j = 0; j < 59; j++)
+		    {
+			if (levelList[j].name == level.row)
+			{
+			    for (var k = 0; k < 5; k++)
+			    {
+				goalValue += levelList[j+2+3*k].value;
+			    }
+			    break;
+			}
+		    }
+		    break;
+		case 13:
+		    level = getRandomLevel();
+		    goalName = "Beat all stages in " + level.row + " row on SA";
+		    goalSynergy = ["row"+level.row, "row", "SA"];
+		    for (var j = 0; j < 59; j++)
+		    {
+			if (levelList[j].name == level.row)
+			{
+			    for (var k = 0; k < 5; k++)
+			    {
+				goalValue += levelList[j+1+3*k].value;
+			    }
+			    break;
+			}
+		    }
+		    break;
+		case 14:
+		    //nLevels is from 1-3
+		    nLevels = Math.ceil(3*Math.random());
+		    goalName = "Beat " + nLevels + " levels on LTK mode";
+		    goalSynergy = ["LTK"]
+		    goalValue = ltkConst*nLevels*avLevelTime;
+		    break;
+		case 15:
+		    //nLevels is from 1-3
+		    nLevels = Math.ceil(3*Math.random());
+		    goalName = "Beat " + nLevels + " levels on DLTK mode";
+		    goalSynergy = ["DLTK"]
+		    goalValue = dltkConst*nLevels*avLevelTime;
+		    break;
+		case 18:
+		case 16:
+		    nObjects = Math.ceil(Math.random()*5)*10 + 50; //50-100 increments of 10
+		    guard = getRandomGuard();
+		    goalName = "Kill " + nObjects + " "+ guard.name;
+		    goalSynergy = guard.synergy;
+		    goalValue = nObjects*guard.value;
+		    break;
+		case 17:
+		    //nLevels numsafesopen 5-12
+		    nObjects = Math.ceil(Math.random()*7 + 5);
+		    goalName = "Open " + nObjects + " safes";
+		    goalSynergy = ["Archives", "Surface 1", "Bunker 2", "Depot", "key"];
+		    goalValue = nObjects*avSafeTime;
+		    break;
+		}
+		geGoalList[i] = {name: goalName, child: "no", 
+				 value: goalValue, types: goalSynergy};
+		//alert("geGoalList[i].name: " + geGoalList[i].name 
+		//	+ "\nSynergy: " + geGoalList[i].synergy);
+	    }
+	    tempList = [];
+	    tempList = quickSort(geGoalList);
+	    //alert(tempList[0].name);
+	    var goalList = [];
+	    var k = 0;
+	    for (var i = 1; i <= 25; i++)
+	    {
+		// Notice the bingo difficulty starts at 1-25 not 0!
+		goalList[i] = [];
+		for(var j = 0; j < tempList.length/25; j++)
+		{
+		    goalList[i][j] = tempList[k];
+		    k++;
+		}
+		var counter = goalList[i].length, temp, index;
+		while (counter > 0) {
+		    // Pick a random index
+		    index = Math.floor(Math.random() * counter);
+
+		    // Decrease counter by 1
+		    counter--;
+		    
+		// And swap the last element with it
+		    temp = goalList[i][counter];
+		    goalList[i][counter] = goalList[i][index];
+		    goalList[i][index] = temp;
+		}
+		
+	    }
+	    //alert("Retruend Goal List! Zeroth Element:" + goalList[1][0].name);
+	    return goalList;
 	}
 	
-	
-	$('.popout').click(function() {
-            var mode = null;
-            var line = $(this).attr('id');
-            var name = $(this).html();
-            var items = [];
-            var cells = $('#bingo .'+ line);
-            for (var i = 0; i < 5; i++) {
-		items.push($(cells[i]).html());
-            };
-            if (mode == 'simple-stream') {
-		window.open('/tools/bingo-popout-basic.html#'+ name +'='+ items.join(';;;'),"_blank","toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width=420, height=180"); }
-            else {
-		window.open('/tools/bingo-popout.html#'+ name +'='+ items.join(';;;'),"_blank","toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width=220, height=460"); }
-	});
-	
-	$("#bingo tr td:not(.popout), #selected td").toggle(
-	    function () {
-		$(this).addClass("greensquare");
-	    },
-	    function () {
-		$(this).addClass("redsquare").removeClass("greensquare");
-	    },
-	    function () {
-		$(this).removeClass("redsquare");
-	    }
+
+
+	//Populate the bingo board in the array
+	//giuocob 16-8-12: changed this section to:
+	//1. Support uniform goal selection by shuffling arrays before checking goals
+	//2. Remove all child rows by checking child tag
+	//3. If no goal is suitable, instead of choosing goal with lowest synergy, now next difficulty up is checked
+	var goalArray = makeGoalList();
+	var diff = 0;
+	var tempArray = [];
+	for(var i=1;i<=25;i++)
+	{
+	    diff = i;
+	    var sq = populationOrder[i];
+	    var getDifficulty = bingoBoard[sq].difficulty;
+	    tempArray = goalArray[i];
+	    var j=0, synergy=0, spill = 0, currentObj=null, minSynObj=null;
+	    do
+	    {
+		currentObj = tempArray[j];
+		synergy = checkLine(sq,currentObj);
+		if(minSynObj == null || synergy < minSynObj.synergy)
+		{
+		    minSynObj = {synergy: synergy, value: currentObj};
+		}
+		j++;
+		if(j >= tempArray.length)
+		{
+		    diff++;
+		    spill++;
+		    if(diff > 25) {
+			return false;  //HIT THE PANIC BUTTON, RUN FOR THE HILLS
+		    } else if(spill >=3) {
+			return false;  //THIS BINGO CARD IS IN UNACCEPTABLE CONDITION
+		    } else {
+			tempArray = goalArray[diff];
+			j = 0;
+		    }
+		}
+	    } while(synergy != 0);   //Perhaps increase to 1 if difficulty increases happen too often
 	    
-	);
-	
-	$("#row1").hover(function() { $(".row1").addClass("hover"); }, function() {	$(".row1").removeClass("hover"); });
-	$("#row2").hover(function() { $(".row2").addClass("hover"); }, function() {	$(".row2").removeClass("hover"); });
-	$("#row3").hover(function() { $(".row3").addClass("hover"); }, function() {	$(".row3").removeClass("hover"); });
-	$("#row4").hover(function() { $(".row4").addClass("hover"); }, function() {	$(".row4").removeClass("hover"); });
-	$("#row5").hover(function() { $(".row5").addClass("hover"); }, function() {	$(".row5").removeClass("hover"); });
+	    
+	    bingoBoard[sq].types = minSynObj.value.types;
+	    bingoBoard[sq].subtypes = minSynObj.value.subtypes;
+	    bingoBoard[sq].name = minSynObj.value[LANG] || minSynObj.value.name;
+	    bingoBoard[sq].child = minSynObj.value.child;
+	    bingoBoard[sq].synergy = minSynObj.synergy;
+	}
 
-	$("#col1").hover(function() { $(".col1").addClass("hover"); }, function() {	$(".col1").removeClass("hover"); });
-	$("#col2").hover(function() { $(".col2").addClass("hover"); }, function() {	$(".col2").removeClass("hover"); });
-	$("#col3").hover(function() { $(".col3").addClass("hover"); }, function() {	$(".col3").removeClass("hover"); });
-	$("#col4").hover(function() { $(".col4").addClass("hover"); }, function() {	$(".col4").removeClass("hover"); });
-	$("#col5").hover(function() { $(".col5").addClass("hover"); }, function() {	$(".col5").removeClass("hover"); });
+	return bingoBoard;
 
-	$("#tlbr").hover(function() { $(".tlbr").addClass("hover"); }, function() {	$(".tlbr").removeClass("hover"); });
-	$("#bltr").hover(function() { $(".bltr").addClass("hover"); }, function() {	$(".bltr").removeClass("hover"); });
 
-	function mirror(i) {
+
+
+    	function mirror(i) {
 	    if      (i == 0) { i = 4; }
 	    else if (i == 1) { i = 3; }
 	    else if (i == 3) { i = 1; }
@@ -190,39 +549,13 @@ srl.ootbingo = function (levelList, objectList, guardList, weaponList, cheatList
 	    value = 5*e5 + e1;
 
 	    if (MODE == "short") { value = Math.floor(value/2); } // if short mode, limit difficulty
-    	    else if (MODE == "long") { value = Math.floor((value + 25) / 2); }
-    	    value++;
+	    else if (MODE == "long") { value = Math.floor((value + 25) / 2); }
+	    value++;
 	    return value;
 	}
-	function bingoGoalArray(type) {
-	    this.type = type;
-	    this.name = "goalName";
-	    this.child =  "no";
-	    this.value = 0;
-	    this.synergy = "nothing";
-	}
-	
-	function shuffle(bingoGoalArray) {
-	    var counter = bingoGoalArray.length, temp, index;
 
-	    // While there are elements in the array
-	    while (counter > 0) {
-		// Pick a random index
-		index = Math.floor(Math.random() * counter);
-
-		// Decrease counter by 1
-		counter--;
-
-		// And swap the last element with it
-		temp = bingoGoalArray[counter];
-		bingoGoalArray[counter] = bingoGoalArray[index];
-		bingoGoalArray[index] = temp;
-	    }
-
-	    return bingoGoalArray;
-	}
 	//Uniformly shuffles an array (note: the original array will be changed)
-	/*function shuffle(toShuffle)
+	function shuffle(toShuffle)
 	{
 	    for(var i=0;i<toShuffle.length;i++)
 	    {
@@ -231,18 +564,16 @@ srl.ootbingo = function (levelList, objectList, guardList, weaponList, cheatList
 		toShuffle[i] = toShuffle[randElement];
 		toShuffle[randElement] = temp;
 	    }
-	}*/
+	}
 
 	//Get a uniformly shuffled array of all the goals of a given difficulty tier
-	/*
 	function getShuffledGoals(difficulty)
 	{
-	    bingoList = 
 	    var newArray = bingoList[difficulty].slice();
 	    shuffle(newArray);
 	    return newArray;
 	}
-	*/
+
 	//Given a difficulty as an argument, find the square that contains that difficulty
 	function getDifficultyIndex(difficulty)
 	{
@@ -255,471 +586,85 @@ srl.ootbingo = function (levelList, objectList, guardList, weaponList, cheatList
 	    }
 	    return 0;
 	}
-	// Wodahs-Reklaw
-	// Due to the ammount of complexity of GE
-	// it would seem better to generate a random
-	// pool of goals with varying difficulty and
-	// level selection.
-	function getRandomLevel()
-	{
-	    return levelList[Math.floor(levelList.length * Math.random())];
-	}
-	function getRandomWeapon()
-	{
-	    return levelList[Math.floor(weaponList.length * Math.random())];
-	}
-	function getRandomCheat()
-	{
-	    return cheatList[Math.floor(cheatList.length * Math.random())];
-	}
-	function getRandomGuard()
-	{
-	    return guardList[Math.floor(guardList.length * Math.random())];
-	}
+	
 
-	function swap(items, firstIndex, secondIndex){
-	    var temp = items[firstIndex];
-	    items[firstIndex] = items[secondIndex];
-	    items[secondIndex] = temp;
-	}
-	function partition(items, left, right) {
-	    var pivot   = items[Math.floor((right + left) / 2).value],
-            i = left,
-            j = right;
-	    while (i <= j) {
-		while (items[i].value < pivot.value) {
-		    i++;
-		}
-		while (items[j].value > pivot.value) {
-		    j--;
-		}
-		if (i <= j) {
-		    swap(items, i, j);
-		    i++;
-		    j--;
-		}
-	    }
-	    return i;
-	}
-	function quickSort(items, left, right) {
-	    var index;
-	    if (items.length > 1) {
-		left = typeof left != "number" ? 0 : left;
-		right = typeof right != "number" ? items.length - 1 : right;
-		index = partition(items, left, right);
-		if (left < index - 1) {
-		    quickSort(items, left, index - 1);
-		}
-		if (index < right) {
-		    quickSort(items, index, right);
-		}
-	    }
-	    return items;
-	}
 
-	function makeGoalList()
-	{
-	    var geGoalList = []
-	    var totalGoals = 75;
-	    var randomNumber = 0;
-	    var goalValue = 0;
-	    var goalName = "";
-	    var goalSynergy = [];
-	    var level;
-	    var cheat;
-	    var object;
-	    var weapon;
-	    var guard;
-	    var nLevels;
-	    var nObjects;
-	    var avLevelTime = 80; // 85 Is actual value but bias for
-	                          // Agent needs to be taken into account.
-	    var avSATime = 86;
-	    var av00ATime = 103;
-	    var avSafeTime = 71;
-	    alert("Entered Loop Thing");
-	    for (var i; i < totalGoals; i++){
-		goalValue = 0;
-		goalName = "";
-		// Assign Random Variable to random number
-		switch(randomNumber){
-		case 21:
-		case 0:
-		    level = getRandomLevel();
-		    goalName = "Beat " + level.name + " on A/SA/00A";
-		    goalValue = levelList[level.number/3 * 3].value 
-			+ levelList[level.number/3 * 3 + 1].value
-			+ levelList[level.number/3 * 3 + 2].value;
-		    goalSynergy = ["A", "SA", "00A", level.name];
-		    break;
-		case 1:
-		    //N levels 3-10
-		    nLevels = Math.ceil(7*Math.random() + 3);
-		    cheat = getRandomCheat();
-		    goalName = "Beat " + nLevels + " with " + cheat.name;
-		    goalValue = nLevels*cheat.const*avLevelTime;
-		    goalSynergy = cheat.synergy.concat([cheat.name]);
-	   	    break;
-		case 2:
-		    // N levels 1-5
-		    nLevels = Math.ceil(5*Math.random());
-		    cheat = getRandomCheat();
-		    goalName = "Beat " + nLevels + " with " + cheat.name
-			+ " on 00A";
-		    goalValue = nLevels*cheat.const*av00ATime;
-		    goalSynergy = cheat.synergy.concat([cheat.name, "00A"]);
-		    break;
-		case 3:
-		    // N levels 1-5
-		    nLevels = Math.ceil(5*Math.random());
-		    cheat = getRandomCheat();
-		    goalName = "Beat " + nLevels + " with " + cheat.name
-			+ " on SA";
-		    goalValue = nLevels*cheat.const*avSATime;
-		    goalSynergy = cheat.synergy.concat([cheat.name, "SA"]);
-		    break;
-		case 4:
-		    object = getRandomObject();
-		    // Make N objects 1/2, 3/4, 4/4
-		    nObjects = Math.ceil(object.maxAmmount/2 
-			+ object.maxAmmount*Math.floor(Math.random*3)/4);
-		    goalName = "Destory " + nObjects + " " + object.name;
-		    goalValue = nObjects*object.value;
-		    goalSynergy = object.synergy;
-		    break;
-		case 5:
-		    level = getRandomLevel();
-		    goalName = "Beat all levels in " + level.row + " row";
-		    goalSynergy = ["row"+level.row, "row"];
-		    for (var j = 0; j < 59; j++)
-		    {
-			if (levelList[j].name == level.row)
-			{
-			    for (var k = 0; k < 5; k++)
-			    {
-				goalValue += levelList[j+3*k].value;
-			    }
-			    break;
-			}
-		    }
-		    break;
-		case 6:
-		    level = getRandomLevel();
-		    goalName = "Beat all levels in " + level.col + " column";
-		    goalSynergy = ["col"+level.col, "col"];
-		    for (var j = 0; j < 59; j++)
-		    {
-			if (levelList[j].name == level.col)
-			{
-			    for (var k = 0; k < 4; k++)
-			    {
-				goalValue += levelList[j+5*3*k].value;
-			    }
-			    break;
-			}
-		    }
-		    break;
-		case 19:
-		    level = getRandomLevel();
-		    goalName = "Beat all levels in " + level.col + " column on SA";
-		    goalSynergy = ["col"+level.col, "col"];
-		    for (var j = 0; j < 59; j++)
-		    {
-			if (levelList[j].name == level.col)
-			{
-			    for (var k = 0; k < 4; k++)
-			    {
-				goalValue += levelList[j+5*3*k+1].value;
-			    }
-			    break;
-			}
-		    }
-		    break;
-		case 20:
-		    level = getRandomLevel();
-		    goalName = "Beat all levels in " + level.col + " column on 00A";
-		    goalSynergy = ["col"+level.col, "col"];
-		    for (var j = 0; j < 59; j++)
-		    {
-			if (levelList[j].name == level.col)
-			{
-			    for (var k = 0; k < 4; k++)
-			    {
-				goalValue += levelList[j+5*3*k+2].value;
-			    }
-			    break;
-			}
-		    }
-		    break;
-		case 7:
-		    //nLevels takes a value from 1-10
-		    nLevels = Math.ceil(10*Math.random());
-		    weapon = getRandomWeapon();
-		    goalSynergy = weapon.synergy.concat(["weapon"]);		    
-		    goalName = "Beat " + nLevels + " using only " + weapon.name;
-		    goalValue = nLevels*weapon.const*avLevelTime;
-		    break;
-		case 8:
-		    //nLevels takes a value from 1-10
-		    nLevels = Math.ceil(10*Math.random());
-		    weapon = getRandomWeapon();
-		    goalSynergy = weapon.synergy.concat(["weapon", "00A"]);
-		    goalName = "Beat " + nLevels + "using only " + weapon.name
-			+ " on 00A";
-		    goalValue = nLevels*weapon.const*av00ATime;
-		    break;
-		case 9:
-		    //nLevels takes a value from 1-10
-		    nLevels = Math.ceil(10*Math.random());
-		    weapon = getRandomWeapon();
-		    goalSynergy = weapon.synergy.concat(["weapon", "SA"]);
-		    goalName = "Beat " + nLevels + "using only " + weapon.name
-			+ " on 00A";
-		    goalValue = nLevels*weapon.const*avSATime;
-		    break;
-
-		case 10:
-		    //nObjects takes a value from ?-?
-		    nObjects = Math.ceil(5*Math.random() + 10);
-		    goalName = "Obtain " + nObjects + " key(cards)";
-		    goalValue = keycardConst*nLevels;
-		    goalSynergy = ["key", "Silo"];
-		    break;
-		case 11:
-		    //nLevels takes 5-10?
-		    nLevels = Math.ceil(5*Math.random() + 5);
-		    goalName = "Alert an alarm on " + nLevels + " levels.";
-		    goalValue = nLevels*avLevelTime;
-		    goalSynergy = ["Dam", "Control", "Alarms"];
-		    break;
-		case 12:
-		    level = getRandomLevel();
-		    goalName = "Beat all levels in " + level.row + " row on 00A";
-		    goalSynergy = ["row"+level.row, "row", "00A"];
-		    for (var j = 0; j < 59; j++)
-		    {
-			if (levelList[j].name == level.row)
-			{
-			    for (var k = 0; k < 5; k++)
-			    {
-				goalValue += levelList[j+2+3*k].value;
-			    }
-			    break;
-			}
-		    }
-		    break;
-		case 13:
-		    level = getRandomLevel();
-		    goalName = "Beat all levels in " + level.row + " row on SA";
-		    goalSynergy = ["row"+level.row, "row", "SA"];
-		    for (var j = 0; j < 59; j++)
-		    {
-			if (levelList[j].name == level.row)
-			{
-			    for (var k = 0; k < 5; k++)
-			    {
-				goalValue += levelList[j+1+3*k].value;
-			    }
-			    break;
-			}
-		    }
-		    break;
-		case 14:
-		    //nLevels is from 1-3
-		    nLevels = Math.ceil(3*Math.random);
-		    goalName = "Beat " + nLevels + " on LTK mode";
-		    goalSynergy = ["LTK"]
-		    goalValue = ltkConst*nLevels*avLevelTime;
-		    break;
-		case 15:
-		    //nLevels is from 1-3
-		    nLevels = Math.ceil(3*Math.random);
-		    goalName = "Beat " + nLevels + " on DLTK mode";
-		    goalSynergy = ["DLTK"]
-		    goalValue = dltkConst*nLevels*avLevelTime;
-		    break;
-		case 18:
-		case 16:
-		    nObjects = Math.ceil(Math.random*5)*10 + 50; //50-100 increments of 10
-		    guard = getRandomGuard();
-		    goalName = "Kill " + nObjects + guard.name;
-		    goalSynergy = guard.synergy;
-		    goalValue = nObjects*guard.value;
-		    break;
-		case 17:
-		    //nLevels numsafesopen 5-12
-		    nObjects = Math.ceil(Math.random*7 + 5);
-		    goalName = "Open " + nLevels + " safes";
-		    goalSynergy = ["Archives", "Surface 1", "Bunker 2", "Depot", "key"];
-		    goalValue = nObjects*avSafeTime;
-		    break;
-		}
-		geGoalList[i] = {name: goalname, child: "no", 
-				 value: goalValue, synergy: goalSynergy};
-	    }
-	    alert("Goal List Done!");
-	    var tempList = quickSort(geGoalList);
-	    alert(tempList[0].name);
-	    alert("Problems?");
-	    var goalList = [];
-	    var k = 0;
-	    for (var i = 0; 1 <= 25; i++)
-	    {
-		// Notice the bingo difficulty starts at 1-25 not 0!
-		goalList[i] = [];
-		for(var j = 0; j < tempList.length/25; j++)
-		{
-		    goalList[i][j] = tempList[k];
-		    k++;
-		}
-		var counter = goalList[i].length, temp, index;
-		alert("Counter is: " + counter +" K is: " + k);
-		while (counter > 0) {
-		    // Pick a random index
-		    index = Math.floor(Math.random() * counter);
-
-		    // Decrease counter by 1
-		    counter--;
-		    
-		// And swap the last element with it
-		    temp = goalList[i][counter];
-		    goalList[i][counter] = goalList[i][index];
-		    goalList[i][index] = temp;
-		}
-		
-	    }
-
-	    return goalList;
-	}
-
-	/*
-	function getShuffledGoals(difficulty, bingoList)
-	{
-	    //var bingoList = [[]];
-	    //bingoList = makeGoalList()
-
-	    var newArray = bingoList[difficulty].slice();
-	    shuffle(newArray);
-	    return newArray;
-	}*/
 	function checkLine(i, testsquare)
 	{
-	    var typesA = testsquare.types;
+	    var typesA = testsquare.types || [];
+	    var subtypesA = testsquare.subtypes || [];
 	    var synergy = 0;
 	    var rows = rowCheckList[i], elements = [];
+	    var childCount = 0;
 	    for(var k=0;k<rows.length;k++)
 	    {
 		elements = rowElements[rows[k]];
+		childCount = 0;
 		for(var m=0;m<elements.length;m++)
 		{
-		    var typesB = bingoBoard[elements[m]].types;
+		    var testsquare2 = bingoBoard[elements[m]];
+		    var typesB = testsquare2.types || [];
+		    var subtypesB = testsquare2.subtypes || [];
 		    if(typeof typesB != 'undefined')
 		    {
-			for(var n=0;n<typesA.length;n++)
-			{
-			    for(var p=0;p<typesB.length;p++)
-			    {
-				if(typesA[n] == typesB[p])
-				{
-				    synergy++; //if match increase
-				    if(n==0) { synergy++ }; //if main type increase
-				    if(p==0) { synergy++ }; //if main type increase
+			function matchArrays(arr1, arr2) {
+			    for(var n=0;n<arr1.length;n++) {
+				for(var p=0;p<arr2.length;p++) {
+				    if(arr1[n] == arr2[p]) synergy++;
 				}
 			    }
 			}
+
+			matchArrays(typesA, typesB);
+			matchArrays(typesA, subtypesB);
+			matchArrays(subtypesA, typesB);
+		    }
+		    if(bingoBoard[elements[m]].child == "yes")
+		    {
+			childCount++;
+		    }
+		}
+		//Remove child-only rows, remove adult goals from short
+		if(MODE == "short")
+		{
+		    if(testsquare.child == "no")
+		    {
+			childCount--;
+		    }
+		    if(childCount < 5)
+		    {
+			synergy += 3;
+		    }
+		}
+		else
+		{
+		    if(testsquare.child == "yes")
+		    {
+			childCount++;
+		    }
+		    if(childCount > 4)
+		    {
+			synergy += 3;
 		    }
 		}
 	    }
 	    return synergy;
 	}
-	
-	var bingoBoard = []; //the board itself stored as an array first
-	for (var i=1;i<=25;i++) {
-	    bingoBoard[i] = {difficulty: difficulty(i), child: "no"};
-	}
-    // in order 1-25
-  
-  
-    //giuocob 19-2-13: bingoBoard is no longer populated left to right:
-    //It is now populated mostly randomly, with high difficult goals and
-    //goals on the diagonals out in front
-    var populationOrder = [];
-    populationOrder[1] = 13;   //Populate center first
-    var diagonals = [1,7,19,25,5,9,17,21];
-    shuffle(diagonals);
-    populationOrder = populationOrder.concat(diagonals);   //Next populate diagonals
-    var nondiagonals = [2,3,4,6,8,10,11,12,14,15,16,18,20,22,23,24];
-    shuffle(nondiagonals);
-    populationOrder = populationOrder.concat(nondiagonals);   //Finally add the rest of the squares
-    //Lastly, find location of difficulty 23,24,25 elements and put them out front
-    for(var k=23;k<=25;k++)
-    {
-	var currentSquare = getDifficultyIndex(k);
-	if(currentSquare == 0) continue;
-	for(var i=1;i<25;i++)
-	{
-	    if(populationOrder[i] == currentSquare)
-	    {
-		populationOrder.splice(i,1);
-		break;
-	    }
-	}
-	populationOrder.splice(1,0,currentSquare);
     }
 
+
+    //Loop over cards until one is accepted.
+    var card;
+    var iterations = 0;
+    while(true) {
+	iterations++;
+	card = makeCard();
+	if(card === false) {
+	    continue;
+	} else {
+	    break;
+	}
+    }
     
-  
-    //Populate the bingo board in the array
-    //giuocob 16-8-12: changed this section to:
-    //1. Support uniform goal selection by shuffling arrays before checking goals
-    //2. Remove all child rows by checking child tag
-	//3. If no goal is suitable, instead of choosing goal with lowest synergy, now next difficulty up is checked
-	var goalList = makeGoalList();
-	for(var i=1;i<=25;i++)
-	{
-	    var sq = populationOrder[i];
-	    var getDifficulty = bingoBoard[sq].difficulty;
-	    //var goalArray = getShuffledGoals(getDifficulty, bingoList);
-	    var j=0, synergy=0, currentObj=null, minSynObj=null;
-	    do
-	    {
-		currentObj = goalArray[i][j];
-		synergy = checkLine(sq,currentObj);
-		if(minSynObj == null || synergy < minSynObj.synergy)
-		{
-		    minSynObj = {synergy: synergy, value: currentObj};
-		}
-		j++;
-		if(j >= goalArray.length)
-		{
-		    getDifficulty++;
-		    if(getDifficulty > 25)
-		    {
-			break;
-		    }
-		    else
-		    {
-			goalArray = getShuffledGoals(getDifficulty);
-			j = 0;
-		    }
-		}
-	    } while(synergy != 0);   //Perhaps increase to 1 if difficulty increases happen too often
-	    
-	    
-	    bingoBoard[sq].types = minSynObj.value.types;
-	    bingoBoard[sq].name = minSynObj.value[LANG] || minSynObj.value.name;
-	    bingoBoard[sq].child = minSynObj.value.child;
-	    bingoBoard[sq].synergy = minSynObj.synergy;
-	}
-	
-	//populate the actual table on the page
-	for (i=1; i<=25; i++) {
-	    $('#slot'+i).append(bingoBoard[i].name);
-	    //$('#slot'+i).append("<br/>" + bingoBoard[i].types.toString());
-	    //$('#slot'+i).append("<br/>" + bingoBoard[i].synergy);
-	}
-	
-	
-    }
-
-} // setup
+    return card;
+}
