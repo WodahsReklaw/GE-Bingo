@@ -53,13 +53,13 @@ function bingosetup() {
 
 	var cardType = prettyMode[bingoOpts.mode];
 	var results = $("#results");
-	results.append ("<p>OoT Bingo <strong>" + bingoList["info"].version + "</strong>&emsp;Seed: <strong>" + 
+	results.append ("<p>GE Bingo <strong>" + levelList["Version"].version +"</strong>&emsp;Seed: <strong>" + 
 		bingoOpts.seed + "</strong>&emsp;Card type: <strong>" + cardType + "</strong></p>");
 
 	
 	var bingoFunc = ootBingoGenerator;
 	
-	var bingoBoard = bingoFunc(bingoList, bingoOpts);
+    var bingoBoard = bingoFunc(levelList, objectList, guardList, weaponList, cheatList, bingoOpts);
 	if(bingoBoard) {
 		for (i=1; i<=25; i++) {  
 			$('#slot'+i).append(bingoBoard[i].name);
