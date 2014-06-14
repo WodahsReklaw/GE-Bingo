@@ -180,7 +180,7 @@ ootBingoGenerator = function(levelList, objectList, guardList, weaponList, cheat
 		goalValue = 0;
 		goalName = "";
 		// Assign Random Variable to random number
-		randomNumber = Math.floor(21*Math.random());
+		randomNumber = Math.floor(25*Math.random());
 		//alert(randomNumber);
 		switch(randomNumber){
 		case 0:
