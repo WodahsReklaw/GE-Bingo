@@ -5,7 +5,7 @@ ootBingoGenerator = function(levelList, objectList, guardList, weaponList, cheat
     var LANG = opts.lang || 'name';
     var SEED = opts.seed || Math.ceil(999999 * Math.random()).toString();
 	if(!getUrlParameter("seed")){
-		window.location = '?seed=' + SEED;
+	  window.location = '?seed=' + SEED;
 	}
     Math.seedrandom(SEED);
     var MODE = opts.mode || 'normal';
@@ -183,8 +183,8 @@ ootBingoGenerator = function(levelList, objectList, guardList, weaponList, cheat
 		randomNumber = Math.floor(21*Math.random());
 		//alert(randomNumber);
 		switch(randomNumber){
-		case 21:
 		case 0:
+		case 1:
 		    level = getRandomLevel();
 		    randomLevel = Math.floor(Math.floor(Math.random()*19) * 3);
 		    goalName = "Beat " + levelList[randomLevel].name + " on A/SA/00A";
@@ -194,7 +194,7 @@ ootBingoGenerator = function(levelList, objectList, guardList, weaponList, cheat
 			+ levelList[randomLevel + 2].value;
 		    goalSynergy = ["A", "SA", "00A", level.name];
 		    break;
-		case 1:
+		case 2:
 		    //N levels 3-10
 		    nLevels = Math.ceil(7*Math.random() + 3);
 		    cheat = getRandomCheat();
@@ -202,7 +202,7 @@ ootBingoGenerator = function(levelList, objectList, guardList, weaponList, cheat
 		    goalValue = nLevels*cheat.const*avLevelTime;
 		    goalSynergy = cheat.synergy.concat([cheat.name]);
 	   	    break;
-		case 2:
+		case 3:
 		    // N levels 1-5
 		    nLevels = Math.ceil(5*Math.random());
 		    cheat = getRandomCheat();
@@ -211,7 +211,7 @@ ootBingoGenerator = function(levelList, objectList, guardList, weaponList, cheat
 		    goalValue = nLevels*cheat.const*av00ATime;
 		    goalSynergy = cheat.synergy.concat([cheat.name, "00A"]);
 		    break;
-		case 3:
+		case 4:
 		    // N levels 1-5
 		    nLevels = Math.ceil(5*Math.random());
 		    cheat = getRandomCheat();
@@ -220,7 +220,7 @@ ootBingoGenerator = function(levelList, objectList, guardList, weaponList, cheat
 		    goalValue = nLevels*cheat.const*avSATime;
 		    goalSynergy = cheat.synergy.concat([cheat.name, "SA"]);
 		    break;
-		case 4:
+		case 5:
 		    object = getRandomObject();
 		    // Make N objects 1/2, 3/4, 4/4
 		    nObjects = Math.ceil(object.maxAmmount/2 
@@ -229,7 +229,7 @@ ootBingoGenerator = function(levelList, objectList, guardList, weaponList, cheat
 		    goalValue = nObjects*object.value;
 		    goalSynergy = object.synergy;
 		    break;
-		case 5:
+		case 6:
 		    level = getRandomLevel();
 		    goalName = "Beat all stages in " + level.row + " row on Agent";
 		    goalSynergy = ["row"+level.row, "row"];
@@ -245,7 +245,7 @@ ootBingoGenerator = function(levelList, objectList, guardList, weaponList, cheat
 			}
 		    }
 		    break;
-		case 6:
+		case 7:
 		    level = getRandomLevel();
 		    goalName = "Beat all stages in " + level.col + " column on Agent";
 		    goalSynergy = ["col"+level.col, "col"];
@@ -261,7 +261,7 @@ ootBingoGenerator = function(levelList, objectList, guardList, weaponList, cheat
 			}
 		    }
 		    break;
-		case 19:
+		case 8:
 		    level = getRandomLevel();
 		    goalName = "Beat all stages in " + level.col + " column on SA";
 		    goalSynergy = ["col"+level.col, "col"];
@@ -277,7 +277,7 @@ ootBingoGenerator = function(levelList, objectList, guardList, weaponList, cheat
 			}
 		    }
 		    break;
-		case 20:
+		case 9:
 		    level = getRandomLevel();
 		    goalName = "Beat all stages in " + level.col + " column on 00A";
 		    goalSynergy = ["col"+level.col, "col"];
@@ -293,7 +293,7 @@ ootBingoGenerator = function(levelList, objectList, guardList, weaponList, cheat
 			}
 		    }
 		    break;
-		case 7:
+		case 10:
 		    //nLevels takes a value from 2-10
 		    nLevels = Math.ceil(9*Math.random()+1);
 		    weapon = getRandomWeapon();
@@ -301,7 +301,7 @@ ootBingoGenerator = function(levelList, objectList, guardList, weaponList, cheat
 		    goalName = "Beat " + nLevels + " levels using only " + weapon.name;
 		    goalValue = nLevels*weapon.const*avLevelTime;
 		    break;
-		case 8:
+		case 11:
 		    //nLevels takes a value from 1-10
 		    nLevels = Math.ceil(10*Math.random());
 		    weapon = getRandomWeapon();
@@ -310,7 +310,7 @@ ootBingoGenerator = function(levelList, objectList, guardList, weaponList, cheat
 			+ " on 00A";
 		    goalValue = nLevels*weapon.const*av00ATime;
 		    break;
-		case 9:
+		case 12:
 		    //nLevels takes a value from 1-10
 		    nLevels = Math.ceil(10*Math.random());
 		    weapon = getRandomWeapon();
@@ -320,21 +320,21 @@ ootBingoGenerator = function(levelList, objectList, guardList, weaponList, cheat
 		    goalValue = nLevels*weapon.const*avSATime;
 		    break;
 
-		case 10:
+		case 13:
 		    //nObjects takes a value from ?-?
 		    nObjects = Math.ceil(5*Math.random() + 10);
 		    goalName = "Obtain " + nObjects + " key(cards)";
 		    goalValue = keycardConst*nObjects;
 		    goalSynergy = ["key", "Silo"];
 		    break;
-		case 11:
+		case 14:
 		    //nLevels takes 5-10?
 		    nLevels = Math.ceil(5*Math.random() + 5);
 		    goalName = "Activate an alarm on " + nLevels + " levels.";
 		    goalValue = nLevels*avLevelTime;
 		    goalSynergy = ["Dam", "Control", "Alarms"];
 		    break;
-		case 12:
+		case 15:
 		    level = getRandomLevel();
 		    goalName = "Beat all stages in " + level.row + " row on 00A";
 		    goalSynergy = ["row"+level.row, "row", "00A"];
@@ -350,7 +350,7 @@ ootBingoGenerator = function(levelList, objectList, guardList, weaponList, cheat
 			}
 		    }
 		    break;
-		case 13:
+		case 16:
 		    level = getRandomLevel();
 		    goalName = "Beat all stages in " + level.row + " row on SA";
 		    goalSynergy = ["row"+level.row, "row", "SA"];
@@ -366,38 +366,70 @@ ootBingoGenerator = function(levelList, objectList, guardList, weaponList, cheat
 			}
 		    }
 		    break;
-		case 14:
+		case 17:
 		    //nLevels is from 1-3
 		    nLevels = Math.ceil(3*Math.random());
 		    goalName = "Beat " + nLevels + " levels on LTK mode";
-		    goalSynergy = ["LTK"]
+		    goalSynergy = ["LTK", "007"]
 		    goalValue = ltkConst*nLevels*avLevelTime;
 		    break;
-		case 15:
+		case 18:
 		    //nLevels is from 1-3
-		    nLevels = Math.ceil(3*Math.random());
+		    nLevels = Math.ceil(2*Math.random());
 		    goalName = "Beat " + nLevels + " levels on DLTK mode";
-		    goalSynergy = ["DLTK"]
+		    goalSynergy = ["DLTK", "007"]
 		    goalValue = dltkConst*nLevels*avLevelTime;
 		    break;
-		case 18:
-		case 16:
+		case 19:
 		    nObjects = Math.ceil(Math.random()*5)*10 + 50; //50-100 increments of 10
 		    guard = getRandomGuard();
 		    goalName = "Kill " + nObjects + " "+ guard.name;
 		    goalSynergy = guard.synergy;
 		    goalValue = nObjects*guard.value;
 		    break;
-		case 17:
+		case 20:
 		    //nLevels numsafesopen 5-12
 		    nObjects = Math.ceil(Math.random()*7 + 5);
 		    goalName = "Open " + nObjects + " safes";
 		    goalSynergy = ["Archives", "Surface 1", "Bunker 2", "Depot", "key"];
 		    goalValue = nObjects*avSafeTime;
 		    break;
+		case 21:
+		    nLevels = Math.ceil(Math.random()*5);
+		    goalName = "Beat " + nLevels + " levels with over 100% Accuracy";
+		    goalSynergy = ["2x GL", "2x RL", "Accuracy"];
+		    goalValue = nLevels*avLevelTime*1.4; // Setting Accuracy Constant to 1.4 difficulty
+		    break;
+		case 22:
+		    nLevels = Math.ceil(Math.random()*4);
+		    goalName = "Beat " + nLevels + " levels with over 150% Accuracy";
+		    goalSynergy = ["2x GL", "2x RL", "Magnum", "RC-P90","Accuracy"];
+		    goalValue = nLevels*avLevelTime*1.7; // 150% accuracy is 1.7 in diffuclty
+		    break;
+		case 23:
+		    nObjects = Math.ceil(Math.random()*3)*25+25;
+		    goalName = "Kill " + nObjects + " guards while in a tank";
+		    goalSynergy = ["Streets","Runway", "kill"];
+		    goalValue = nObjects*12; //Tank kills are slow and should be 12s each
+		    break;
+		case 24:
+		    nLevels = Math.ceil(Math.random()*5);
+		    goalName = "Beat " + nLevels + " level(s) on DLTK, with Damage at 0%";
+		    goalSynergy = ["007", "LTK", "DLTK"];
+		    goalValue = nLevels*4.0;
+		    break;
+		
 		}
 		geGoalList[i] = {name: goalName, child: "no", 
 				 value: goalValue, types: goalSynergy};
+		//Removes Duplicates from goals reducing repeated squares
+		// increasing diversity!
+		for (var n = 0; n < i; n++){
+		    if (geGoalList[i].name == geGoalList[n].name)
+		        i--;
+		        continue;
+		    }
+		}
 		//alert("geGoalList[i].name: " + geGoalList[i].name 
 		//	+ "\nSynergy: " + geGoalList[i].synergy);
 	    }
