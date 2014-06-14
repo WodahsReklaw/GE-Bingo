@@ -72,13 +72,13 @@ levelList[59] = { number: 59, name: "Egypt", diff: "00A", row: "Control", col: "
 var weaponList = [];
 
 weaponList[0] = { name: "Slappers", synergy: ["Slappers"], const: 1.4 };
-weaponList[1] = { name: "Golden Gun", synergy: ["Egypt"], const: 1.2 };
+weaponList[1] = { name: "Golden Gun", synergy: ["Egypt", "kill"], const: 1.2 };
 weaponList[2] = { name: "PP7", synergy: ["PP7"], const: 1.4  };
 weaponList[3] = { name: "Taser", synergy: ["Taser"], const: 1.6 };
 weaponList[4] = { name: "Hunting Knifes", synergy: ["Slappers", "Kinfe"], const: 1.4 };
 weaponList[5] = { name: "Throwing Knifes", synergy: ["Knife"], const: 1.5 };
 weaponList[6] = { name: "Magnum", synergy: ["Magnum"], const: 1.1 };
-weaponList[7] = { name: "2x RC-P90", synergy: ["RC-P90"], const: 0.3};
+weaponList[7] = { name: "2x RC-P90", synergy: ["RC-P90", "kill"], const: 0.3};
 weaponList[8] = { name: "2x Grenade L.", synergy: ["2x GL"], const: 0.4};
 weaponList[9] = { name: "2x Rocket L.", synergy: ["2x RL"], const: 0.4};
 //weaponList[10] = { name: "2x Laser", synergy: ["Shoot"], const: 0.2};
