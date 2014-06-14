@@ -228,7 +228,7 @@ ootBingoGenerator = function(levelList, objectList, guardList, weaponList, cheat
 		    // Make N objects 1/2, 3/4, 4/4
 		    nObjects = Math.ceil(object.maxAmmount/2 
 			+ object.maxAmmount*Math.floor(Math.random()*3)/4);
-		    goalName = "Destory " + nObjects + " " + object.name;
+		    goalName = "Destroy " + nObjects + " " + object.name;
 		    goalValue = nObjects*object.value;
 		    goalSynergy = object.synergy;
 		    break;
