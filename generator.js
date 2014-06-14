@@ -425,7 +425,7 @@ ootBingoGenerator = function(levelList, objectList, guardList, weaponList, cheat
 		//Removes Duplicates from goals reducing repeated squares
 		// increasing diversity!
 		for (var n = 0; n < i; n++){
-		    if (geGoalList[i].name == geGoalList[n].name)
+		    if (geGoalList[i].name == geGoalList[n].name){
 		        i--;
 		        continue;
 		    }
