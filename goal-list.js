@@ -100,16 +100,17 @@ objectList[2] = { name: "Drone Guns", synergy: ["Jungle", "Aztec", "Control", "E
 objectList[3] = { name: "Security Cameras", synergy: ["Bunker 1","Bunker 2", "Surface 2", "Destroy"], maxAmmount: 30, value: 11 };
 objectList[4] = { name: "Computers", synergy: ["Bunker 2", "Frigate", "Control", "Depot","Destroy"], maxAmmount: 50, value: 8 };
 objectList[5] = { name: "Tables", synergy: ["Tables", "Destroy"], maxAmmount: 40, value: 9 };
+objectList[6] = { name: "Barrels", synergy: ["Destroy","Caverns", "Silo", "Surface 1", "Surface 2"], maxAmmount: 60, value: 5};
 
 var guardList = [];
 
-guardList[0] = { name: "Janus Special Force (black guard)", synergy: ["kill", "janus"], value: 5 };
+guardList[0] = { name: "Janus Special Force (black guard)", synergy: ["kill", "janus"], value: 6 };
 guardList[1] = { name: "Russian Soldiers (Green guard)", synergy: ["kill", "russian"], value: 3 };
 guardList[2] = { name: "Siberian Special Forces", synergy: ["kill", "Surface 1", "Surface 2"], value: 11 };
 guardList[3] = { name: "Arctic Commandos (Blue Guards)", synergy: ["kill", "Bunker 2"], value: 4 };
-guardList[4] = { name: "Moonraker Elite", synergy: ["kill", "elite"], value: 13 };
+guardList[4] = { name: "Moonraker Elite", synergy: ["kill", "Aztec"], value: 13 };
 guardList[5] = { name: "Janus Marine", synergy: ["Train", "kill"], value: 3 };
-guardList[6] = { name: "Jungle Commando", synergy: ["kill","Control", "Jungle"], value: 5};
+guardList[6] = { name: "Jungle Commando", synergy: ["kill","Control", "Jungle"], value: 6};
 
 var specialList = [];
 specialList = { name: "Release 18 Hostages", synergy: ["Frigate"], value: levelList[20].value*3};
