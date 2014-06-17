@@ -115,10 +115,10 @@ guardList[6] = { name: "Jungle Commando", synergy: ["kill","Control", "Jungle"],
 
 var obtainList = [];
 
-obtianList[0] = { name: "Key(cards)", synergy: ["Bunker 2", "Silo", "Bunker 1", "key"], maxAmmount: 20, value: 10};
+obtainList[0] = { name: "Key(cards)", synergy: ["Bunker 2", "Silo", "Bunker 1", "key"], maxAmmount: 20, value: 10};
 obtainList[1] = { name: "Safe Contents", synergy: ["Bunker 2", "Surface 1", "Archives", "Depot"], maxAmmount: 12, value: 55};
 obtainList[2] = { name: "Full Body Armors on Agent", synergy: ["Depot", "Agent", "Cradle"], maxAmmount: 15, value: 15};
-obtianList[3] = { name: "Half Body Armors on Agent", synergy: ["Depot", "Agent"], maxAmmount: 10, value: 18};
+obtainList[3] = { name: "Half Body Armors on Agent", synergy: ["Depot", "Agent"], maxAmmount: 10, value: 18};
 obtainList[4] = { name: "Unique 2 Hand Weapon Combos", synergy: ["Caverns"], maxAmmount: 8, value: 36};
 
 
