@@ -59,7 +59,7 @@ function bingosetup() {
 	
 	var bingoFunc = ootBingoGenerator;
 	
-    var bingoBoard = bingoFunc(levelList, objectList, guardList, weaponList, cheatList, obtainList, speicalList, bingoOpts);
+    var bingoBoard = bingoFunc(levelList, objectList, guardList, weaponList, cheatList, obtainList, specialList, bingoOpts);
 	if(bingoBoard) {
 		for (i=1; i<=25; i++) {  
 			$('#slot'+i).append(bingoBoard[i].name);
