@@ -5,7 +5,7 @@
 //#   0-59        "Name"     "Agent"    "Name_Row"  "Col_Row" Value(Seconds)
 
 var levelList = [];
-levelList["Version"] = {version: "1.0"};
+levelList["Version"] = {version: "1.1"};
 levelList[0] = { number: 0, name: "Dam", diff: "A", row: "Dam", col: "Dam", value: 55 };
 levelList[1] = { number: 1, name: "Dam", diff: "SA", row: "Dam", col: "Dam", value: 80 };
 levelList[2] = { number: 2, name: "Dam", diff: "00A", row: "Dam", col: "Dam", value: 130 };
@@ -124,10 +124,10 @@ obtainList[4] = { name: "Unique 2 Hand Weapon Combos", synergy: ["Caverns"], max
 
 
 var specialList = [];
-specialList = { name: "Release 18 Hostages", synergy: ["Frigate"], value: levelList[20].value*3};
-specialList = { name: "Release 14 Hostrages", synergy: ["Frigate"], value: levelList[19].value*3};
-specialList = { name: "Beat Egypt Obtaining the Golden G. Last", synergy: ["Egypt"], value: 57*2};
-specialList = { name: "Shoot 600 Paintballs", synergy: ["cheat", "RC-P90"], value: 100 };
+specialList[0] = { name: "Release 18 Hostages", synergy: ["Frigate"], value: levelList[20].value*3 };
+specialList[1] = { name: "Release 14 Hostages", synergy: ["Frigate"], value: levelList[19].value*3 };
+specialList[2] = { name: "Beat Egypt Obtaining the Golden G. Last", synergy: ["Egypt"], value: 57*2 };
+specialList[3] = { name: "Shoot 600 Paintballs", synergy: ["cheat", "RC-P90"], value: 100 };
 //$(function() { srl.ootbingo(levelList, objectList, guardList, weaponList, cheatList, 5); });
 
 

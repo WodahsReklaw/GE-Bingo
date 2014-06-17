@@ -1,6 +1,7 @@
 //NOTICE: As of version 6, this script will only generate cards correctly for Ocarina of Time bingo
 //and as shuch should be saved alongside the regular bingo script.
-ootBingoGenerator = function(levelList, objectList, guardList, weaponList, cheatList, obtainList, specialList, opts) {
+ootBingoGenerator = function(levelList, objectList, guardList, weaponList, 
+			     cheatList, obtainList, specialList, opts) {
     if(!opts) opts = {};
     var LANG = opts.lang || 'name';
     var SEED = opts.seed || Math.ceil(999999 * Math.random()).toString();
@@ -68,7 +69,8 @@ ootBingoGenerator = function(levelList, objectList, guardList, weaponList, cheat
 	populationOrder = populationOrder.concat(diagonals);   //Next populate diagonals
 	var nondiagonals = [2,3,4,6,8,10,11,12,14,15,16,18,20,22,23,24];
 	shuffle(nondiagonals);
-	populationOrder = populationOrder.concat(nondiagonals);   //Finally add the rest of the squares
+	populationOrder = populationOrder.concat(nondiagonals);   
+	//Finally add the rest of the squares
 	//Lastly, find location of difficulty 23,24,25 elements and put them out front
 	for(var k=23;k<=25;k++)
 	{
@@ -190,15 +192,16 @@ ootBingoGenerator = function(levelList, objectList, guardList, weaponList, cheat
 		goalValue = 0;
 		goalName = "";
 		// Assign Random Variable to random number
-		randomNumber = Math.floor(27*Math.random());
+		randomNumber = Math.floor(26*Math.random());
 		//alert(randomNumber);
 		switch(randomNumber){
 		case 0:
 		case 1:
 		    level = getRandomLevel();
 		    randomLevel = Math.floor(Math.floor(Math.random()*19) * 3);
-		    goalName = "Beat " + levelList[randomLevel].name + " on A/SA/00A";
-		    //alert("rndThing: " + randomLevel + " " + (randomLevel+1) + (randomLevel+2));
+		    goalName = "Beat " + levelList[randomLevel].name + " on all difficulties";
+		    //alert("rndThing: " + randomLevel + " " + (randomLevel+1) 
+			//+ (randomLevel+2));
 		    goalValue = levelList[randomLevel].value 
 			+ levelList[randomLevel + 1].value
 			+ levelList[randomLevel + 2].value;
@@ -207,18 +210,18 @@ ootBingoGenerator = function(levelList, objectList, guardList, weaponList, cheat
 		case 2:
 		case 3:
 		    //N levels 3-10
-		    nLevels = Math.ceil(7*Math.random() + 3);
+		    nLevels = Math.ceil(5*Math.random() + 3);
 		    cheat = getRandomCheat();
 		    goalName = "Beat " + nLevels + " levels with " + cheat.name;
 		    goalValue = nLevels*cheat.const*avLevelTime;
-		    goalSynergy = cheat.synergy.concat([cheat.name]);
+		    goalSynergy = cheat.synergy.concat([cheat.name, "Agent"]);
 	   	    break;
 	   	case 4:
 		case 5:
 		    // N levels 1-5
-		    nLevels = Math.ceil(3*Math.random()+2);
+		    nLevels = Math.ceil(8*Math.random()+2);
 		    cheat = getRandomCheat();
-		    goalName = "Beat " + nLevels + " level(s) with " + cheat.name
+		    goalName = "Beat " + nLevels + " levels with " + cheat.name
 			+ " on 00A";
 		    goalValue = nLevels*cheat.const*av00ATime;
 		    goalSynergy = cheat.synergy.concat([cheat.name, "00A"]);
@@ -226,9 +229,9 @@ ootBingoGenerator = function(levelList, objectList, guardList, weaponList, cheat
 		case 6:
 		case 7:
 		    // N levels 1-5
-		    nLevels = Math.ceil(5*Math.random()+2);
+		    nLevels = Math.ceil(8*Math.random()+2);
 		    cheat = getRandomCheat();
-		    goalName = "Beat " + nLevels + " level(s) with " + cheat.name
+		    goalName = "Beat " + nLevels + " levels with " + cheat.name
 			+ " on SA";
 		    goalValue = nLevels*cheat.const*avSATime;
 		    goalSynergy = cheat.synergy.concat([cheat.name, "SA"]);
@@ -245,7 +248,7 @@ ootBingoGenerator = function(levelList, objectList, guardList, weaponList, cheat
 		case 9:
 		    level = getRandomLevel();
 		    goalName = "Beat all stages in " + level.row + " row on Agent";
-		    goalSynergy = ["row"+level.row, "row"];
+		    goalSynergy = ["row"+level.row, "row", "Agent"];
 		    for (var j = 0; j < 59; j++)
 		    {
 			if (levelList[j].name == level.row)
@@ -261,7 +264,7 @@ ootBingoGenerator = function(levelList, objectList, guardList, weaponList, cheat
 		case 10:
 		    level = getRandomLevel();
 		    goalName = "Beat all stages in " + level.col + " column on Agent";
-		    goalSynergy = ["col"+level.col, "col"];
+		    goalSynergy = ["col"+level.col, "col", "Agent"];
 		    for (var j = 0; j < 59; j++)
 		    {
 			if (levelList[j].name == level.col)
@@ -277,7 +280,7 @@ ootBingoGenerator = function(levelList, objectList, guardList, weaponList, cheat
 		case 11:
 		    level = getRandomLevel();
 		    goalName = "Beat all stages in " + level.col + " column on SA";
-		    goalSynergy = ["col"+level.col, "col"];
+		    goalSynergy = ["col"+level.col, "col", "SA"];
 		    for (var j = 0; j < 59; j++)
 		    {
 			if (levelList[j].name == level.col)
@@ -293,7 +296,7 @@ ootBingoGenerator = function(levelList, objectList, guardList, weaponList, cheat
 		case 12:
 		    level = getRandomLevel();
 		    goalName = "Beat all stages in " + level.col + " column on 00A";
-		    goalSynergy = ["col"+level.col, "col"];
+		    goalSynergy = ["col"+level.col, "col", "00A"];
 		    for (var j = 0; j < 59; j++)
 		    {
 			if (levelList[j].name == level.col)
@@ -311,7 +314,7 @@ ootBingoGenerator = function(levelList, objectList, guardList, weaponList, cheat
 		    //nLevels takes a value from 2-10
 		    nLevels = Math.ceil(8*Math.random()+2);
 		    weapon = getRandomWeapon();
-		    goalSynergy = weapon.synergy.concat(["weapon"]);		    
+		    goalSynergy = weapon.synergy.concat(["weapon", "Agent"]);		    
 		    goalName = "Beat " + nLevels + " levels using only " + weapon.name;
 		    goalValue = nLevels*weapon.const*avLevelTime;
 		    break;
@@ -380,12 +383,12 @@ ootBingoGenerator = function(levelList, objectList, guardList, weaponList, cheat
 			}
 		    }
 		    break;
-		case 29:
+		case 19:
 		    //nLevels is from 1-3
 		    nLevels = Math.ceil(3*Math.random());
 		    goalName = "Beat " + nLevels + " levels on LTK mode";
 		    goalSynergy = ["LTK", "007"]
-		    goalValue = ltkConst*nLevels*avLevelTime;
+		    goalValue = ltkConst*nLevels*av00ATime;
 		    break;
 		//case 18:
 		//    //nLevels is from 1-3
@@ -404,17 +407,20 @@ ootBingoGenerator = function(levelList, objectList, guardList, weaponList, cheat
 		case 21:
 		    //nLevels numsafesopen 5-12
 		    pickup = getRandomPickup();
-		    nObjects = Math.ceil(Math.floor(Math.random()*3*pickup.maxAmmount/4) + pickup.maxAmmount/2);
+		    nObjects = Math.ceil(Math.floor(Math.random()*3*pickup.maxAmmount/4) 
+					 + pickup.maxAmmount/2);
 		    goalName = "Pickup " + nObjects + " " + pickup.name;
 		    goalSynergy = pickup.synergy.concat(["pickup"]);
 		    goalValue = nObjects*pickup.value;
 		    break;
 		case 22:
-		    nObjects = Math.ceil(Math.random()*35);
+		    nObjects = Math.ceil(Math.floor(Math.random()*4)*10 + 10);
 		    accuracy = Math.ceil(Math.random()*3)*10+70;
-		    goalName = "Kill " + nObjects + " guards with " + accuracy + "% Accuracy or better.";
-		    goalSynergy = ["2x GL", "2x RL", "Accuracy"];
-		    goalValue = nObjects*5*1.2*accuracy/100.0; // Setting Accuracy Constant to 1.2 difficulty
+		    goalName = "Kill " + nObjects + " guards with " + accuracy 
+			+ "% accuracy or better.";
+		    goalSynergy = ["Magnum","kill", "Accuracy"];
+		    goalValue = nObjects*5*1.2*accuracy/100.0; 
+		    // Setting Accuracy Constant to 1.2 difficulty
 		    break;
 		case 23:
 		    nObjects = Math.ceil(Math.random()*3)*25+25;
@@ -423,14 +429,14 @@ ootBingoGenerator = function(levelList, objectList, guardList, weaponList, cheat
 		    goalValue = nObjects*12; //Tank kills are slow and should be 12s each
 		    break;
 		case 24:
-		    nLevels = Math.ceil(Math.random()*5);
+		    nLevels = Math.ceil(Math.random()*8);
 		    goalName = "Beat " + nLevels + " level(s) on DLTK, with Damage at 0%";
 		    goalSynergy = ["007", "LTK", "DLTK"];
-		    goalValue = nLevels*4.0;
+		    goalValue = nLevels*2.0*avLevelTime;
 		    break;
 		case 25:
 		    special = getRandomSpecial();
-		    goalName = special.name;
+		    goalName = "" + special.name;
 		    goalSynergy = special.synergy;
 		    goalValue = special.value;
 		    break;
