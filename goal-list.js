@@ -125,9 +125,9 @@ obtainList[4] = { name: "Unique 2 Hand Weapon Combos", synergy: ["Caverns"], max
 
 var specialList = [];
 specialList = { name: "Release 18 Hostages", synergy: ["Frigate"], value: levelList[20].value*3};
-speicalList = { name: "Release 14 Hostrages", synergy: ["Frigate"], value: levelList[19].value*3};
-speicalList = { name: "Beat Egypt Obtaining the Golden G. Last", synergy: ["Egypt"], value: 57*2};
-speicalList = { name: "Shoot 600 Paintballs", synergy: ["cheat", "RC-P90"], value: 100 };
+specialList = { name: "Release 14 Hostrages", synergy: ["Frigate"], value: levelList[19].value*3};
+specialList = { name: "Beat Egypt Obtaining the Golden G. Last", synergy: ["Egypt"], value: 57*2};
+specialList = { name: "Shoot 600 Paintballs", synergy: ["cheat", "RC-P90"], value: 100 };
 //$(function() { srl.ootbingo(levelList, objectList, guardList, weaponList, cheatList, 5); });
 
 
