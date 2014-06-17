@@ -101,6 +101,7 @@ objectList[3] = { name: "Security Cameras", synergy: ["Bunker 1","Bunker 2", "Su
 objectList[4] = { name: "Computers", synergy: ["Bunker 2", "Frigate", "Control", "Depot","Destroy"], maxAmmount: 50, value: 8 };
 objectList[5] = { name: "Tables", synergy: ["Tables", "Destroy"], maxAmmount: 40, value: 9 };
 objectList[6] = { name: "Barrels", synergy: ["Destroy","Caverns", "Silo", "Surface 1", "Surface 2"], maxAmmount: 60, value: 5};
+objectList[7] = { name: "Cars", synergy: ["Streets", "Tank"], maxAmmount: 60, value: 10};
 
 var guardList = [];
 
@@ -111,6 +112,16 @@ guardList[3] = { name: "Arctic Commandos (Blue Guards)", synergy: ["kill", "Bunk
 guardList[4] = { name: "Moonraker Elite", synergy: ["kill", "Aztec"], value: 13 };
 guardList[5] = { name: "Janus Marine", synergy: ["Train", "kill"], value: 3 };
 guardList[6] = { name: "Jungle Commando", synergy: ["kill","Control", "Jungle"], value: 6};
+
+var obtainList = [];
+
+obtianList[0] = { name: "Key(cards)", synergy: ["Bunker 2", "Silo", "Bunker 1", "key"], maxAmmount: 20, value: 5};
+obtainList[1] = { name: "Safe Contents", synergy: ["Bunker 2", "Surface 1", "Archives", "Depot"], maxAmmount: 12, value: 10};
+obtainList[2] = { name: "Full Body Armors on Agent", synergy: ["Depot", "Agent", "Cradle"], maxAmmount: 15, value: 15};
+obtianList[3] = { name: "Half Body Armors on Agent", synergy: ["Depot", "Agent"], maxAmmount: 10, value: 16};
+obtainList[4] = { name: "Unique 2 Hand Weapon Combos", synergy: ["Caverns"], maxAmmount 8, value: 30};
+
+
 
 var specialList = [];
 specialList = { name: "Release 18 Hostages", synergy: ["Frigate"], value: levelList[20].value*3};
