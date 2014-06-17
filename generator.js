@@ -116,7 +116,7 @@ ootBingoGenerator = function(levelList, objectList, guardList, weaponList, cheat
 	}
 	function getRandomSpecial()
 	{
-	    return speicalList[Math.floor(specialList.length * Math.random())];
+	    return specialList[Math.floor(specialList.length * Math.random())];
 	}
 	function swap(items, firstIndex, secondIndex){
 	    var temp = items[firstIndex];
