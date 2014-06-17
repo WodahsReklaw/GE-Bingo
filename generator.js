@@ -405,7 +405,7 @@ ootBingoGenerator = function(levelList, objectList, guardList, weaponList, cheat
 		    //nLevels numsafesopen 5-12
 		    pickup = getRandomPickup();
 		    nObjects = Math.ceil(Math.floor(Math.random()*3*pickup.maxAmmount/4) + pickup.maxAmmount/2);
-		    goalName = "Pickup " + nObjects + " " + pickup.name);
+		    goalName = "Pickup " + nObjects + " " + pickup.name;
 		    goalSynergy = pickup.synergy.concat(["pickup"]);
 		    goalValue = nObjects*pickup.value;
 		    break;
