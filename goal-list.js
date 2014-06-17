@@ -87,18 +87,19 @@ var cheatList = [];
 
 cheatList[0] = { name: "Turbo Mode", synergy: ["cheat"], const: .5 };
 cheatList[1] = { name: "Fast Animations", synergy: ["cheat"], const: 1.3 };
-cheatList[2] = { name: "Enemey Rockets", synergy: ["cheat"], const: 1.5 };
-cheatList[3] = { name: "Tiny Bond", synergy: ["cheat"], const: 1.1 };
+cheatList[2] = { name: "Enemy Rockets", synergy: ["cheat"], const: 1.5 };
+cheatList[3] = { name: "Tiny Bond", synergy: ["cheat"], const: 1.2 };
 cheatList[4] = { name: "DK Mode", synergy: ["cheat"], const: 0.8 };
+cheatList[5] = { name: "no damage taken", synergy: ["DLTK", "LTK", "Enemy Rockets"], const: 1.5};
 
 var objectList = [];
 
-objectList[0] = { name: "Crates", synergy: ["Deopt", "Destroy"], maxAmmount: 100, value: 5 };
-objectList[1] = { name: "Glass Panes", synergy: ["Glass", "Destroy"], maxAmmount: 40, value: 7 };
-objectList[2] = { name: "Drone Guns", synergy: ["Jungle", "Destroy"], maxAmmount: 50, value: 18 };
+objectList[0] = { name: "Crates", synergy: ["Deopt", "Dam", "Surface1","Destroy"], maxAmmount: 100, value: 5 };
+objectList[1] = { name: "Glass Panes", synergy: ["Glass", "Archives", "Destroy"], maxAmmount: 40, value: 7 };
+objectList[2] = { name: "Drone Guns", synergy: ["Jungle", "Aztec", "Control", "Egypt", "Destroy"], maxAmmount: 50, value: 18 };
 objectList[3] = { name: "Security Cameras", synergy: ["Bunker 1","Bunker 2", "Surface 2", "Destroy"], maxAmmount: 30, value: 11 };
-objectList[4] = { name: "Computer Moniters", synergy: ["Aztec", "Destroy"], maxAmmount: 50, value: 8 };
-objectList[5] = { name: "Tables", synergy: ["Tables", "Destroy"], maxAmmount: 40, value: 7 };
+objectList[4] = { name: "Computers", synergy: ["Bunker 2", "Frigate", "Control", "Depot","Destroy"], maxAmmount: 50, value: 8 };
+objectList[5] = { name: "Tables", synergy: ["Tables", "Destroy"], maxAmmount: 40, value: 9 };
 
 var guardList = [];
 
@@ -108,8 +109,13 @@ guardList[2] = { name: "Siberian Special Forces", synergy: ["kill", "Surface 1",
 guardList[3] = { name: "Arctic Commandos (Blue Guards)", synergy: ["kill", "Bunker 2"], value: 4 };
 guardList[4] = { name: "Moonraker Elite", synergy: ["kill", "elite"], value: 13 };
 guardList[5] = { name: "Janus Marine", synergy: ["Train", "kill"], value: 3 };
+guardList[6] = { name: "Jungle Commando", synergy: ["kill","Control", "Jungle"], value: 5};
 
-
+var specialList = [];
+specialList = { name: "Release 18 Hostages", synergy: ["Frigate"], value: levelList[20].value*3};
+speicalList = { name: "Release 14 Hostrages", synergy: ["Frigate"], value: levelList[19].value*3};
+speicalList = { name: "Beat Egypt Obtaining the Golden G. Last", synergy: ["Egypt"], value: 57*2};
+speicalList = { name: "Shoot 600 Paintballs", synergy: ["cheat", "RC-P90"], value: 100 };
 //$(function() { srl.ootbingo(levelList, objectList, guardList, weaponList, cheatList, 5); });
 
 
